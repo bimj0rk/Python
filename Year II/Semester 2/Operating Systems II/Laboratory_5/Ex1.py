@@ -1,2 +1,6 @@
-name = input("Name is: ")
-print(f'Hello {name}')
+def main():
+    name = input("Name is: ")
+    print("Hello ", name)
+
+if __name__ == '__main__':
+    main()

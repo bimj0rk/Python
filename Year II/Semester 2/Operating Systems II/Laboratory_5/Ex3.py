@@ -12,8 +12,12 @@ def compute(a, b, c, d):
         sum = int(a) + int(multiplication) + int(d)
     return "Result: " + str(sum)
 
-a = int(input('a: '))
-b = int(input('b: '))
-c = int(input('c: '))
-d = int(input('d: '))
-print(compute(a, b, c, d))
+def main():
+    a = int(input('a: '))
+    b = int(input('b: '))
+    c = int(input('c: '))
+    d = int(input('d: '))
+    print(compute(a, b, c, d))
+
+if __name__ == '__main__':
+    main()

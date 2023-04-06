@@ -14,12 +14,16 @@ def compute(a, b, c, d):
         sum = int(a) + int(multiplication) + int(d)
     return "Result: " + str(sum)
 
-try:
-    a = int(input('a: '))
-    b = int(input('b: '))
-    c = int(input('c: '))
-    d = int(input('d: '))
-    print(compute(a, b, c, d))
-except:
-    print('Input is not a numeric value')
-    sys.exit(1)
+def main():
+    try:
+        a = int(input('a: '))
+        b = int(input('b: '))
+        c = int(input('c: '))
+        d = int(input('d: '))
+        print(compute(a, b, c, d))
+    except:
+        print('Input is not a numeric value')
+        sys.exit(1)
+
+if __name__ == '__main__':
+    main()
