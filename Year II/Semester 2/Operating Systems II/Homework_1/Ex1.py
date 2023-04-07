@@ -1,4 +1,5 @@
 import random
+import csv
 
 class Factor(object):
     def __init__(self, aID, aName, aStatus, aTime):
@@ -96,8 +97,10 @@ class Reasoning(object):
         return self.refSmartHome.environment
     
     def determineDisease(self):
-        diseasesNames = ["Anthrax", "Botulism", "Brucellosis", "Chikungunya", "Coronavirus", "Dengue", 
-                         "Ebola","Haemorrhagic fevers", "Hepatitis", "HIV"]
+        csvFile = open('diseases.csv', 'r')
+        diseases = csvFile.read()
+        diseasesNames = []
+        diseasesNames.append(diseases)
         env = self.getEnvironmentInfo()
         dangerFactor = 0
         seve = "none"
@@ -140,7 +143,16 @@ class Disease(object):
     def __init__(self, aSeverity, aName):
         self.name = aName
         self.severity = aSeverity    
+
+    def read(self):
+        return
+
+    def write(self):
+        return
     
+    def close(self):
+        return
+
 class DBConnection(self):
     def __init__(self, aConnectionString):
         self.connectionString = aConnectionString
