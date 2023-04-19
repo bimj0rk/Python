@@ -5,9 +5,13 @@ import os
 def getFolders():
     folderPath = entry.get()
     folderPath = folderPath.replace("//", "//")
-    for files in os.walk(folderPath):
-        for filename in files:
-           print(filename)
+    if os.path.isdir(folderPath):
+        print("Path is directory.")
+        for files in os.walk(folderPath):
+            for filename in files:
+                print(filename)
+    else:
+        print("Path is not a directory.")
 
 
 window = Tk()
