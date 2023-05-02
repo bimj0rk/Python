@@ -3,6 +3,18 @@ import threading
 import time
 exit_flag = True
 
+def caesarEncrypt(message, shift){
+    encryptedMessage = ""
+    for i in range(len(message)):
+        char = message[i]
+        if char == " ":
+            encryptedMessage += " "
+        elif char.isupper():
+            encryptedMessage += chr((ord(char) + shift - 65) % 26 + 65)
+        else:
+            encryptedMessage += chr((ord(char) + shift - 97) % 26 + 97)
+    return encryptedMessage
+}
 
 def connect(conn):
     global flag
@@ -21,16 +33,17 @@ def connect(conn):
 
 def sendMsg(conn):
     while flag:
-        send_msg = input().encode('utf-8')
-        if send_msg == ' ':
+        sendMsg = input().encode('utf-8')
+        sendMsg = caesarEncrypt(sendMsg, 3)
+        if sendMsg == ' ':
             pass
         else:
-            conn.sendall(send_msg)
+            conn.sendall(sendMsg)
 
 
-if __name__ == '__main__':
+def main():
     flag = True
-    start_time = time.monotonic()
+    startTime = time.monotonic()
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     s.bind(('', 11111))
@@ -42,3 +55,6 @@ if __name__ == '__main__':
     thread2.start()
     thread1.join()
     thread2.join()
+
+if __name__ == '__main__':
+    main()

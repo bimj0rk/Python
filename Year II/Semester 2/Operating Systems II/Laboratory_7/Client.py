@@ -4,35 +4,47 @@ import threading
 import time
 from typing import re
 
+def caesarDecrypt(message, shift):
+    decryptedMessage = ""
+    for i in range(len(message)):
+        char = message[i]
+        if char == " ":
+            decryptedMessage += " "
+        elif char.isupper():
+            decryptedMessage += chr((ord(char) - shift - 65) % 26 + 65)
+        else:
+            decryptedMessage += chr((ord(char) - shift - 97) % 26 + 97)
+    return decryptedMessage
+
 def connect(s):
     while True:
-        r_msg = s.recv(1024)
-        if not r_msg:
+        recievedMsg = s.recv(1024)
+        if not recievedMsg:
             break
-        if r_msg == '':
+        if recievedMsg == '':
             break
         else:
-            print("Server>>>  "+str(r_msg))
+            print("Server>>>  "+str(recievedMsg))
         if not flag:
             break
 
 def receive(s):
     global flag
     while True:
-        s_msg = input().encode('utf-8')
-        if s_msg == '':
+        sentMsg = input().encode('utf-8')
+        sentMsg = caesarDecrypt(sentMsg, 3)
+        if sentMsg == '':
             pass
-        if s_msg.decode() == 'exit':
+        if sentMsg.decode() == 'exit':
             print("wan exit")
             break
         else:
-            s.sendall(s_msg)
-
+            s.sendall(sentMsg)
     flag = False
 
 
-if __name__ == '__main__':
-    start_time = time.monotonic()
+def main():
+    startTime = time.monotonic()
     if 3 != len(sys.argv):
         print("usage: %s [ip adress][port] " % sys.argv[0])
         sys.exit(0)
@@ -46,3 +58,6 @@ if __name__ == '__main__':
     thread2.start()
     thread1.join()
     thread2.join()
+
+if __name__ == '__main__':
+    main()
