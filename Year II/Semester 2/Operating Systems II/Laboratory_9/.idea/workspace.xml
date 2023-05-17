@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="e39539ea-7fda-4a9e-ab7c-6c0b5d91ec90" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="HTML File" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="1aGqwQt4IjULqZHte66APx50Rvk" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Documents/Iuliana/predare/2019-2020/sem2/os/Lab9/analytics_project" />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Iuliana\auth\portfolio\static" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="manage" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="auth" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/manage.py" />
+      <option name="PARAMETERS" value="createsuperuser" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.manage" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="e39539ea-7fda-4a9e-ab7c-6c0b5d91ec90" name="Default Changelist" comment="" />
+      <created>1586372515641</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1586372515641</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="871" y="87" key="#manage" timestamp="1586375467366">
+      <screen x="0" y="0" width="1536" height="920" />
+    </state>
+    <state x="871" y="87" key="#manage/0.0.1536.920@0.0.1536.920" timestamp="1586375467366" />
+    <state x="549" y="215" key="FileChooserDialogImpl" timestamp="1586499884658">
+      <screen x="0" y="0" width="1536" height="920" />
+    </state>
+    <state x="549" y="215" key="FileChooserDialogImpl/0.0.1536.920@0.0.1536.920" timestamp="1586499884658" />
+    <state width="1516" height="244" key="GridCell.Tab.0.bottom" timestamp="1586384599884">
+      <screen x="0" y="0" width="1536" height="920" />
+    </state>
+    <state width="1516" height="244" key="GridCell.Tab.0.bottom/0.0.1536.920@0.0.1536.920" timestamp="1586384599884" />
+    <state width="1516" height="244" key="GridCell.Tab.0.center" timestamp="1586384599884">
+      <screen x="0" y="0" width="1536" height="920" />
+    </state>
+    <state width="1516" height="244" key="GridCell.Tab.0.center/0.0.1536.920@0.0.1536.920" timestamp="1586384599884" />
+    <state width="1516" height="244" key="GridCell.Tab.0.left" timestamp="1586384599884">
+      <screen x="0" y="0" width="1536" height="920" />
+    </state>
+    <state width="1516" height="244" key="GridCell.Tab.0.left/0.0.1536.920@0.0.1536.920" timestamp="1586384599884" />
+    <state width="1516" height="244" key="GridCell.Tab.0.right" timestamp="1586384599884">
+      <screen x="0" y="0" width="1536" height="920" />
+    </state>
+    <state width="1516" height="244" key="GridCell.Tab.0.right/0.0.1536.920@0.0.1536.920" timestamp="1586384599884" />
+    <state x="546" y="106" key="SettingsEditor" timestamp="1586372564486">
+      <screen x="0" y="0" width="1536" height="920" />
+    </state>
+    <state x="546" y="106" key="SettingsEditor/0.0.1536.920@0.0.1536.920" timestamp="1586372564486" />
+    <state x="860" y="289" key="com.intellij.ide.util.TipDialog" timestamp="1586961049672">
+      <screen x="0" y="0" width="1536" height="920" />
+    </state>
+    <state x="860" y="289" key="com.intellij.ide.util.TipDialog/0.0.1536.920@0.0.1536.920" timestamp="1586961049672" />
+  </component>
+</project>
