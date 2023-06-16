@@ -1,5 +1,4 @@
 import GPUtil
-import clr
 import serial
 import time
 import psutil
@@ -16,6 +15,9 @@ def writeRead(x):
 w = wmi.WMI(namespace="root\OpenHardwareMonitor")
 sensors = w.Sensor()
 
+wM = wmi.WMI(namespace="root\wmi")
+moboTemp = (w.MSAcpi_ThermalZoneTemperature()[0].currentTemperature/10) - 273.15
+
 def getSensorValue(sensor_type, sensor_name):
     sensors = w.Sensor()
     for sensor in sensors:
@@ -26,10 +28,6 @@ def getSensorValue(sensor_type, sensor_name):
 def getCPUTemp():
 	cpuTemp = getSensorValue('Temperature', 'CPU Package')
 	return cpuTemp
-	    
-def getMOBOTemp():
-	moboTemp = getSensorValue('Temperature #1', 'Mainboard')
-	return moboTemp
             
 
 def main():
@@ -49,8 +47,7 @@ def main():
 		else:
 			C = str(memLoad)
 
-		#moboTemp = getMOBOTemp()
-		#D = " " + str(int(moboTemp))
+		D = " " + str(int(moboTemp))
 
 		gpu = GPUtil.getGPUs()[0]
 		E = " " + str(int(round(gpu.temperature,1)))
@@ -61,7 +58,7 @@ def main():
 		else:
 			F = str(gpuLoad)
 		      
-		finalString1 = "1:" + A + "," + B + "," + C + "," + "N/A" + ",;"
+		finalString1 = "1:" + A + "," + B + "," + C + "," + D + ",;"
 		finalString2 = "2:" + E + "," + F + "," + "N/A" + "," + "N/A" + ",;"
 		finalString3 = "3:;" 
 
