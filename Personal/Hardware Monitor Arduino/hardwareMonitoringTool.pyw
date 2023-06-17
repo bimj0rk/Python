@@ -1,7 +1,5 @@
-import GPUtil
 import serial
 import time
-import psutil
 import wmi
 
 arduino = serial.Serial(port="COM5", baudrate=115200, timeout=.1)
@@ -15,9 +13,6 @@ def writeRead(x):
 w = wmi.WMI(namespace="root\OpenHardwareMonitor")
 sensors = w.Sensor()
 
-wM = wmi.WMI(namespace="root\wmi")
-moboTemp = (w.MSAcpi_ThermalZoneTemperature()[0].currentTemperature/10) - 273.15
-
 def getSensorValue(sensor_type, sensor_name):
     sensors = w.Sensor()
     for sensor in sensors:
@@ -28,38 +23,67 @@ def getSensorValue(sensor_type, sensor_name):
 def getCPUTemp():
 	cpuTemp = getSensorValue('Temperature', 'CPU Package')
 	return cpuTemp
-            
+
+def getCPULoad():
+	cpuLoad = getSensorValue('Load', 'CPU Total')
+	return cpuLoad
+
+def getMemLoad():
+	memLoad = getSensorValue('Load', 'Memory')
+	return memLoad
+
+def getMoboTemp():
+	moboTemp = getSensorValue('Temperature', 'Temperature #6')
+	return moboTemp
+
+def getGPUTemp():
+	gpuTemp = getSensorValue('Temperature', 'GPU Core')
+	return gpuTemp
+
+def getGPULoad():
+	gpuLoad = getSensorValue('Load', 'GPU Core')
+	return gpuLoad
+
+def getCaseTemp():	
+	caseTemp = getSensorValue('Temperature', 'Temperature #1')
+	return caseTemp
 
 def main():
 	while True:
 		cpuTemp = getCPUTemp()
 		A = " " + str(int(cpuTemp))		
 		
-		cpuLoad = int(round(psutil.cpu_percent(),1))
+		cpuLoad = getCPULoad()
 		if(cpuLoad < 100):
-			B = " " + str(cpuLoad)
+			B = " " + str(int(cpuLoad))
 		else:
-			B = str(cpuLoad)
+			B = str(int(cpuLoad))
 
-		memLoad = int(round(psutil.virtual_memory()[2],1))
+		memLoad = getMemLoad()
 		if(memLoad < 100):
-			C = " " + str(memLoad)
+			C = " " + str(int(memLoad))
 		else:
 			C = str(memLoad)
 
+		moboTemp = getMoboTemp()
 		D = " " + str(int(moboTemp))
 
-		gpu = GPUtil.getGPUs()[0]
-		E = " " + str(int(round(gpu.temperature,1)))
+		gpuTemp = getGPUTemp()
+		E = " " + str(int(gpuTemp))
 
-		gpuLoad = int(round(gpu.load*100,1))
-		if(gpuLoad < 100):
-			F = " " + str(gpuLoad)
+		gpuLoad = getGPULoad()
+		if(gpuLoad < 10):
+			F = "  " + str(int(gpuLoad))
+		elif(gpuLoad < 100):
+			F = " " + str(int(gpuLoad))
 		else:
 			F = str(gpuLoad)
+
+		caseTemp = getCaseTemp()
+		H = " " + str(int(caseTemp))
 		      
 		finalString1 = "1:" + A + "," + B + "," + C + "," + D + ",;"
-		finalString2 = "2:" + E + "," + F + "," + "N/A" + "," + "N/A" + ",;"
+		finalString2 = "2:" + E + "," + F + "," + "N/A" + "," + H + ",;"
 		finalString3 = "3:;" 
 
 		writeRead(finalString1)
