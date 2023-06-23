@@ -20,66 +20,42 @@ def getSensorValue(sensor_type, sensor_name):
             return sensor.Value
     return None
 
-def getCPUTemp():
-	cpuTemp = getSensorValue('Temperature', 'CPU Package')
-	return cpuTemp
-
-def getCPULoad():
-	cpuLoad = getSensorValue('Load', 'CPU Total')
-	return cpuLoad
-
-def getMemLoad():
-	memLoad = getSensorValue('Load', 'Memory')
-	return memLoad
-
-def getMoboTemp():
-	moboTemp = getSensorValue('Temperature', 'Temperature #6')
-	return moboTemp
-
-def getGPUTemp():
-	gpuTemp = getSensorValue('Temperature', 'GPU Core')
-	return gpuTemp
-
-def getGPULoad():
-	gpuLoad = getSensorValue('Load', 'GPU Core')
-	return gpuLoad
-
-def getCaseTemp():	
-	caseTemp = getSensorValue('Temperature', 'Temperature #1')
-	return caseTemp
-
 def main():
 	while True:
-		cpuTemp = getCPUTemp()
+		cpuTemp = getSensorValue('Temperature', 'CPU Package')
 		A = " " + str(int(cpuTemp))		
 		
-		cpuLoad = getCPULoad()
-		if(cpuLoad < 100):
+		cpuLoad = getSensorValue('Load', 'CPU Total')
+		if(cpuLoad < 10):
+			B = "  " + str(int(cpuLoad))
+		elif(cpuLoad > 100 and cpuLoad > 10):
 			B = " " + str(int(cpuLoad))
 		else:
 			B = str(int(cpuLoad))
 
-		memLoad = getMemLoad()
-		if(memLoad < 100):
+		memLoad = getSensorValue('Load', 'Memory')
+		if(memLoad < 10):
+			C = "  " + str(int(memLoad))
+		elif(memLoad < 100 and memLoad > 10):
 			C = " " + str(int(memLoad))
 		else:
-			C = str(memLoad)
+			C = str(int(memLoad))
 
-		moboTemp = getMoboTemp()
+		moboTemp = getSensorValue('Temperature', 'Temperature #1')
 		D = " " + str(int(moboTemp))
 
-		gpuTemp = getGPUTemp()
+		gpuTemp = getSensorValue('Temperature', 'GPU Core')
 		E = " " + str(int(gpuTemp))
 
-		gpuLoad = getGPULoad()
+		gpuLoad = getSensorValue('Load', 'GPU Core')
 		if(gpuLoad < 10):
 			F = "  " + str(int(gpuLoad))
-		elif(gpuLoad < 100):
+		elif(gpuLoad < 100 and gpuLoad > 10):
 			F = " " + str(int(gpuLoad))
 		else:
-			F = str(gpuLoad)
+			F = str(int(gpuLoad))
 
-		caseTemp = getCaseTemp()
+		caseTemp = getSensorValue('Temperature', 'Temperature #2')
 		H = " " + str(int(caseTemp))
 		      
 		finalString1 = "1:" + A + "," + B + "," + C + "," + D + ",;"
