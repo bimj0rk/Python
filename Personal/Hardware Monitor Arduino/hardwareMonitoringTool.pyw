@@ -2,7 +2,7 @@ import serial
 import time
 import wmi
 
-arduino = serial.Serial(port="COM5", baudrate=115200, timeout=.1)
+arduino = serial.Serial(port="COM3", baudrate=115200, timeout=.1)
 
 def writeRead(x):
     arduino.write(x.encode('utf-8'))
@@ -28,7 +28,7 @@ def main():
 		cpuLoad = getSensorValue('Load', 'CPU Total')
 		if(cpuLoad < 10):
 			B = "  " + str(int(cpuLoad))
-		elif(cpuLoad > 100 and cpuLoad > 10):
+		elif(cpuLoad < 100 and cpuLoad > 10):
 			B = " " + str(int(cpuLoad))
 		else:
 			B = str(int(cpuLoad))
