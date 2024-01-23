@@ -1,13 +1,24 @@
-import ctypes
+from tkinter import Tk
+from tkinter import messagebox, simpledialog
 
-ctypes.windll.user32.MessageBoxW(0, "Hey!!11", "Heyyyyy", 0)
-ctypes.windll.user32.MessageBoxW(0, "I have a question...", "Question...", 0)
-ctypes.windll.user32.MessageBoxW(0, "A really important one...", "Question...", 0)
-ctypes.windll.user32.MessageBoxW(0, "Do you...", "Question...", 0)
-ctypes.windll.user32.MessageBoxW(0, "...want to be...", "Question...", 0)
-response = ctypes.windll.user32.MessageBoxW(0, "MY VALENTINE???", "Please?", 1)
+root = Tk()
+root.withdraw()
 
-if response == 1:  # User clicked 'OK'
-    ctypes.windll.user32.MessageBoxW(0, "YIPPIE!!!!111", "HappyHappyHappy", 0)
-else:  # User clicked 'Cancel'
-    ctypes.windll.user32.MessageBoxW(0, "Bollocks.", ":/", 0)
+userInput = simpledialog.askstring("PASSWORD: ", "PASSWORD: ")
+
+if userInput == "teiubesc":
+
+    messagebox.showinfo("Heyyyyy", "Hey!!11",)
+    messagebox.showinfo("Question...", "I have a question...")
+    messagebox.showinfo("Question...", "A really important one...")
+    messagebox.showinfo("Question...", "Do you...")
+    messagebox.showinfo("Question...", "...want to be...")
+    response = messagebox.askyesno("Please?", "MY VALENTINE???")
+
+    if response:  # User clicked 'OK'
+        messagebox.showinfo("HappyHappyHappy", "YIPPIE!!!!111 Check the card")
+    else:  # User clicked 'Cancel'
+        messagebox.showinfo(":/", "Bollocks.")
+
+else:
+    messagebox.showinfo("Nuh Uh", "Wrong password...")
