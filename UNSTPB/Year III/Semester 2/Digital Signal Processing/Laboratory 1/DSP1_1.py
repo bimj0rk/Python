@@ -1,0 +1,1 @@
+# Metoda 1 de importare - import numpy# Metoda 2 de importare - from numpy import pi sau ce avem nevoie# Metoda 3 de importare - from numpy import * - not good # Metoda 4 de importare: (si cea mai buna)import numpy as npprint(np.pi)print(np.sin(np.pi))
