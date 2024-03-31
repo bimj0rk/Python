@@ -20,7 +20,7 @@ FLAGS:
     batch_size - not important;
     learning_rate - hand in hand with alpha, if far from solution, it will go faster to solution;
     shuffle - force the function to an ablosute minimum;
-    tol - tolerance lmao, recommended value: 1e-5;
+    tol - tolerance, recommended value: 1e-5;
     early_stopping - if in less than 10 iterations there is no change, stop;
     n_init smth smth - check docs did not undestand;
     max_fun - again, did not understand.
@@ -42,5 +42,3 @@ print(net.intercepts_)
 Y = net.predict(X)
 print("Acc:", accuracy_score(T, Y))
 print(confusion_matrix(T, Y))
-
-#we are cooked.
