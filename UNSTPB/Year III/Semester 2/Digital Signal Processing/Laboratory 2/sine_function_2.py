@@ -21,3 +21,4 @@ plt.xlabel('time(s)')
 plt.grid() 
 sd.play(y, fs)
 print('ok')
+# %%

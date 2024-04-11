@@ -1,3 +1,5 @@
+#%%
+
 from sklearn.neural_network import MLPRegressor
 from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
@@ -38,3 +40,4 @@ gpa = np.array(5)
 wrk = net.predict(gpa.reshape(1, -1))
 plt.plot(gpa,wrk, 'dr')
 print('Work for GPA=5 is', np.round(wrk[0], decimals = 2), 'hours')
+# %%
