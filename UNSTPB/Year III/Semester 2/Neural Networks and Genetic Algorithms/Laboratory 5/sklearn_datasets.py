@@ -36,4 +36,6 @@ print("Test set score: %f" % mlp.score(xTest, tTest))
 print('The accuracy is: ', accuracy_score(tTest, yTest)) # accuracy_score(y_true, y_pred)
 print('Confusion Matrix is: ')
 print(confusion_matrix(tTest, yTest)) # confusion_matrix(y_true, y_pred) - ON LINES!!! 
+
+#if training and test scores are close, there is no overfit
 # %%
