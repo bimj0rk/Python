@@ -10,14 +10,14 @@ ft = 250
 fc1 = 4500
 fc2 = 6000
 
-rp = 0.3
-rs = 20
+rp = 5
+rs = 40
 
 wp = np.array([fc1 + ft/2, fc2 - ft/2])/(fs/2)
 ws = np.array([fc1 - ft/2, fc2 + ft/2])/(fs/2)
 
 N, w = sp.buttord(wp, ws, rp, rs)
-b, a = sp.butter(N, w, btype = 'bandpass', output = 'ba')
+b, a = sp.butter(N, w, btype = 'bandstop', output = 'ba')
 w, h = sp.freqz(b, a, worN = 512, plot = None)
 f = (fs/2) * w/np.pi
 
