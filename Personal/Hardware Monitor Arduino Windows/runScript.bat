@@ -1,3 +1,3 @@
 @echo off
-python3 "D:\GitHub Repositories\Python\Personal\Hardware Monitor Arduino\hardwareMonitoringTool.pyw"
+python3 "D:\GitHub Repositories\Python\Personal\Hardware Monitor Arduino Windows\hardwareMonitoringTool.pyw"
 exit

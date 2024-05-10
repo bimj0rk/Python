@@ -2,7 +2,7 @@ import serial
 import time
 import wmi
 
-arduino = serial.Serial(port="COM3", baudrate=115200, timeout=.1)
+arduino = serial.Serial(port="COM6", baudrate=115200, timeout=.1)
 
 def writeRead(x):
     arduino.write(x.encode('utf-8'))
