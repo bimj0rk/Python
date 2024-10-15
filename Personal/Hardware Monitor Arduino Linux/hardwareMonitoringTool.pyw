@@ -1,7 +1,7 @@
 import serial
 import time
 import psutil
-import pynvml
+import py3nvml
 
 arduino = serial.Serial(port="/dev/ttyACM0", baudrate=115200, timeout=.1)
 
@@ -12,10 +12,10 @@ def writeRead(x):
     return data
 
 def initializeNVML():
-	pynvml.nvmlInit()
+	py3nvml.nvmlInit()
 
 def handle():
-	handle = pynvml.nvmlDeviceGetHandleByIndex(0)
+	handle = py3nvml.nvmlDeviceGetHandleByIndex(0)
 	return handle
 
 def main():
@@ -42,10 +42,10 @@ def main():
 		moboTemp = 'N/A'
 		D = moboTemp
 
-		gpuTemp = pynvml.nvmlDeviceGetTemperature(handle, 0)
+		gpuTemp = py3nvml.nvmlDeviceGetTemperature(handle, 0)
 		E = " " + str(int(gpuTemp))
 
-		gpuLoad = pynvml.nvmlDeviceGetUtilizationRates(handle).gpu
+		gpuLoad = py3nvml.nvmlDeviceGetUtilizationRates(handle).gpu
 		if(gpuLoad < 10):
 			F = "  " + str(int(gpuLoad))
 		elif(gpuLoad < 100 and gpuLoad > 10):
