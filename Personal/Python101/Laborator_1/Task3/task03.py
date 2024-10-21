@@ -18,16 +18,16 @@ def func(string_message):
     encoded_message = ""
     ################### TO DO #########################
 
-    alfabet = {}
-
+    alfabet = {' ': 0}
+    
     for i in range(65, 90):
         alfabet[chr(i)] = ord(chr(i)) - 64
 
-    alfabet[" "] = 0
 
-    for i in range(len(string_message)):
-        encoded_message[i] = string_message[i].key
-
+    for i in string_message:
+        n = str(alfabet[i])
+        encoded_message += n
+    
     ###################################################
 
     return encoded_message
