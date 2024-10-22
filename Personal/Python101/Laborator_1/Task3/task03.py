@@ -17,7 +17,6 @@ def func(string_message):
     
     encoded_message = ""
     ################### TO DO #########################
-
     alfabet = {' ': 0}
     
     for i in range(65, 90):
@@ -27,7 +26,6 @@ def func(string_message):
     for i in string_message:
         n = str(alfabet[i])
         encoded_message += n
-    
     ###################################################
 
     return encoded_message
