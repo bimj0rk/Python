@@ -6,12 +6,11 @@ def task(register):
     names = []
 
     ################### TO DO #########################
-    check_grade = lambda x : 1 if sum(x.values())/len(x.values()) >= 8.5 else 0
+    check_grade = lambda grades : 1 if sum(grades)/len(grades) >= 8.5 else 0
 
-    for i in register:
-        if(check_grade(register.get(i))):
-            print(i)
-            names.append(register.get(i))
+    for st_names, grades in register.items():
+        if(check_grade(grades)):
+            names.append(st_names)
     ###################################################
     
     return names
