@@ -6,12 +6,5 @@ class Refrigerator(product.Product):
         self.energy_label = energy_label
 
     def __str__(self):
-        """
-        TODO: 
-            * supraincarca metoda str
-
-        Returns:
-            * str:    un string ce va contine informatiile
-                      specifice frigiderului (nume, energy label)
-                    
-        """
+        propozitie = f"Enjoy fresh food with {self.name}, energy label {self.energy_label}."
+        return propozitie

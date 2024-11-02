@@ -7,12 +7,5 @@ class Phone(product.Product):
         self.cpu = cpu
 
     def __str__(self):
-        """
-        TODO:
-            * supraincarca metoda str
-
-        Returns:
-            * str:    un string ce va contine informatiile 
-                      specifice telefonului (nume, CPU, RAM)
-
-        """
+        propozitie = f"The new {self.name} is an unforgettable experience, CPU {self.cpu}, RAM {self.ram}."
+        return propozitie

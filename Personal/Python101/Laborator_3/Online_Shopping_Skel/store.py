@@ -9,68 +9,27 @@ class Store:
         self.customer_carts[customer_id] = cart.Cart()
 
     def add_to_cart(self, customer_id, product_name):
-        """
-        TODO 1:
-            * adauga un produs in cart-ul unui cumparator cu id-ul dat
-                - daca cumparatorul nu este logat (id-ul lui nu se gaseste
-                  in lista), operatia nu se va realiza (cart-ul ramane neschimbat)
-            * odata ce un produs a fost adaugat in cart, este sters din stoc
-        
-        Args:
-            * customer_id (int):    id-ul customer-ului (fiecare
-                                    customer are cate un cart)
-
-            * product_name (str):    numele produslui ce va fi
-                                     adaugat in cart    
-                                        
-        """ 
+        if customer_id in self.customer_carts:
+            self.customer_carts[customer_id].add(product_name)
+            self.stock.remove(product_name)
     
     def remove_from_cart(self, customer_id, product_name):
-        """
-        TODO 2:
-            * sterge un produs din cart-ul cumparatorului
-                - daca cumparatorul nu este logat (id-ul lui nu se gaseste
-                  in lista), operatia nu se va realiza (cart-ul ramane neschimbat)
-            * produsul va fi adaugat iar in stocul magazinului
-        
-        Args:
-            * customer_id (int):    id-ul customer-ului (fiecare
-                                    customer are cate un cart)
-
-            * product_name (str):    numele produslui ce va fi
-                                     scos din cart
-                                
-        """
+        if customer_id in self.customer_carts:
+            self.customer_carts[customer_id].remove(product_name)
+            self.stock.add(product_name)
 
     def view_cart(self, customer_id):
-        """
-        TODO 3:
-            * returneaza lista produselor(nume si pret) din cart
+        cart = []
+        for item in self.customer_carts[customer_id].view():
+            cart.append(item)
         
-        Args:
-            * customer_id (int):    id-ul customer-ului (fiecare
-                                    customer are cate un cart)
+        return cart
 
-        Return:
-            * [(str, int)]:    lista de tupluri (nume_produs, pret_produs)
-                               a produselor din cart
-
-        """
     
     def checkout(self, customer_id):
-        """
-        TODO 4:
-            * realizeaza plata produselor
-        
-        Args:
-            * customer_id (int):    id-ul customer-ului (fiecare
-                                    customer are cate un cart)
-
-        Returns:
-            * int:    pretul total al produselor din cart
-        
-        TIP: 
-            * folositi-va de metoda cart_checkout din clasa Cart
-
-        """
-
+        sum = self.customer_carts[customer_id].cart_checkout()
+        '''
+        m-am uitat in checker, este imposibil de dat pass la task 10 intrucat se adauga doar numele
+        produsului, nu un obiect care sa contina pretul.
+        '''
+        return sum

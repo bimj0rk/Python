@@ -2,10 +2,6 @@
 
 ## <ins>Cerinta</ins>
 
-> Deoarece se stie faptul ca matematica este materia preferata a studentilor, acest task va propune sa implementati un sistem de calcul cu numere complexe.
-
-> Astfel, pentru a aprofunda programarea orientata pe obiecte, se doreste implementarea urmatoarelor metode, in interiorul clasei Complex():
-
 >Cu ocazia zilei de Black Friday, un magazin online de electrocasnice nou înființat a pregătit reduceri imbatabile și are nevoie de ajutor pentru partea logistică a site-ului. Fiind la început, magazinul are un stoc alcătuit doar din două tipuri de produse: telefoane și frigidere. Sarcina voastră este să implementati funcționalitățile necesare pentru a fi siguri că site-ul va funcționa cum trebuie.
 
 >Spre exemplu, magazinul va avea următoarele funcționalități:
