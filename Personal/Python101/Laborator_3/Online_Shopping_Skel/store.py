@@ -18,18 +18,13 @@ class Store:
             self.customer_carts[customer_id].remove(product_name)
             self.stock.add(product_name)
 
-    def view_cart(self, customer_id):
-        cart = []
-        for item in self.customer_carts[customer_id].view():
-            cart.append(item)
-        
-        return cart
+    def view_cart(self, customer_id):        
+        return [(product.name, product.price) for product in self.customer_carts[customer_id].list_cart]
 
     
     def checkout(self, customer_id):
-        sum = self.customer_carts[customer_id].cart_checkout()
+        return self.customer_carts[customer_id].cart_checkout()
         '''
         m-am uitat in checker, este imposibil de dat pass la task 10 intrucat se adauga doar numele
         produsului, nu un obiect care sa contina pretul.
         '''
-        return sum

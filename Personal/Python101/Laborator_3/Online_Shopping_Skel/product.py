@@ -6,6 +6,3 @@ class Product:
     def __add__(self, other):
         sum = self.price + other.price
         return sum
-    
-    def return_price(self):
-        return self.price
