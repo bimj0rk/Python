@@ -19,6 +19,16 @@ class Image():
         pass
     def read(self, filename):
         # read from file and assign the correct parameters (see README and input examples)
+        f = open(filename, 'r')
+        lines = f.readlines()
+        self.format = lines[0]
+        args = lines[1].split(" ")
+        self.rows = args[0]
+        self.columns = args[1]
+        self.max_value = lines[2]
+
+        
+
         pass
     def write(self, filename):
         # write to file in the correct format (see README and input examples)
