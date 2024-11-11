@@ -4,18 +4,19 @@ import os, sys
 from task01 import task01 as t1
 from task02 import task02 as t2
 
+
 def check_task1():
     input_files = []
 
-    print('****************  TASK 01 STARTED  *********************')
+    print("****************  TASK 01 STARTED  *********************")
 
-    for i in range (1,11):
+    for i in range(1, 11):
         input_files.append(f"task01/tests/in/{i}.in")
     i = 1
     for filename in input_files:
-        input = open(filename, 'r')
+        input = open(filename, "r")
         line = input.readline()
-        numbers = line.split(' ')
+        numbers = line.split(" ")
 
         radius = float(numbers[0])
         x = float(numbers[1])
@@ -23,20 +24,21 @@ def check_task1():
 
         x_res, y_res = t1.random_points(radius, x, y)
 
-        if ((x_res - x) ** 2 + (y_res - y) ** 2) <= radius ** 2:
+        if ((x_res - x) ** 2 + (y_res - y) ** 2) <= radius**2:
             print("TEST " + f"{i}" + ".............................. PASSED")
         else:
             print("TEST " + f"{i}" + ".............................. NOT PASSED")
         i += 1
 
         input.close()
+
 
 def check_task_2_1():
     input_files = []
 
-    print('****************  TASK 02.1 STARTED  *********************')
+    print("****************  TASK 02.1 STARTED  *********************")
 
-    for i in range (1,11):
+    for i in range(1, 11):
         input_files.append(f"task02/tests/in/{i}.ppm")
 
     i = 1
@@ -44,14 +46,14 @@ def check_task_2_1():
         image = t2.Image()
 
         image.read(filename)
-        
-        input = open(filename, 'r')
-        
+
+        input = open(filename, "r")
+
         lines = ""
         for line in input.readlines():
             lines += line
-        
-        if image.to_string() == lines:
+
+        if image.__str__() == lines:
             print("TEST " + f"{i}" + ".............................. PASSED")
         else:
             print("TEST " + f"{i}" + ".............................. NOT PASSED")
@@ -59,23 +61,24 @@ def check_task_2_1():
         input.close()
         i += 1
 
+
 def check_task_2_2():
     input_files = []
-    print('****************  TASK 02.2 STARTED  *********************')
-    for i in range (1,11):
+    print("****************  TASK 02.2 STARTED  *********************")
+    for i in range(1, 11):
         input_files.append(f"task02/tests/in/{i}.ppm")
 
     i = 1
     for filename in input_files:
         image = t2.Image()
-        
+
         image.read(filename)
 
         image.sepia()
         image.write(f"task02/tests/out/{i}.ppm")
-        
-        output = open(f"task02/tests/out/{i}.ppm", 'r')
-        ref_output = open(f"task02/tests/ref/{i}.ppm", 'r')
+
+        output = open(f"task02/tests/out/{i}.ppm", "r")
+        ref_output = open(f"task02/tests/ref/{i}.ppm", "r")
         if output.readlines() == ref_output.readlines():
             print("TEST " + f"{i}" + ".............................. PASSED")
         else:
@@ -83,6 +86,7 @@ def check_task_2_2():
         output.close()
         ref_output.close()
         i += 1
+
 
 if len(sys.argv) == 1:
     check_task1()

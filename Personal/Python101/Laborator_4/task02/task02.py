@@ -1,3 +1,5 @@
+import numpy as np
+
 class Image():
     def __init__(self, format='P3', rows=0, columns=0, max_value=255, pixels=[[]]):
         self.format = format
@@ -20,16 +22,17 @@ class Image():
     def read(self, filename):
         # read from file and assign the correct parameters (see README and input examples)
         f = open(filename, 'r')
-        lines = f.readlines()
-        self.format = lines[0]
-        args = lines[1].split(" ")
-        self.rows = args[0]
-        self.columns = args[1]
-        self.max_value = lines[2]
+        self.format = f.readline().strip('/n')
+        args = f.readline().strip('/n').split(" ")
+        self.rows = int(args[0])
+        self.columns = int(args[1])
+        self.max_value = f.readline().split('/n')
 
-        
-
-        pass
+        data = f.read().split('/n')
+        r = open('da.txt', 'w')
+        array = np.array(data)
+        r.writelines(array)
+        self.pixels = array.reshape(self.rows, self.columns, 3)
     def write(self, filename):
         # write to file in the correct format (see README and input examples)
         pass
