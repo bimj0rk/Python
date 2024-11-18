@@ -15,4 +15,5 @@ def scrape_site(url, soup, dict):
     # HINT 2: Use the scrape_page function from task1_1 !
     # HINT 3: Remember to modify the url so that you get the right page. use ref['href'] to get the value of the href field.
 
+    #   if nav != None:
     return dict
