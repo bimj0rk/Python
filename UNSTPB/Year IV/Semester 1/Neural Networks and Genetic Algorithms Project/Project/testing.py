@@ -1,6 +1,8 @@
+#%%
 import tensorflow as tf
 import tf_keras
 import matplotlib.pyplot as plt
+import seaborn as sns
 import numpy as np
 from tf_keras import layers
 from tf_keras.models import Sequential
@@ -101,6 +103,7 @@ for images, labels in val_ds:
 confusion_matrix = confusion_matrix(true_labels, predicted_labels)
 
 plt.figure(figsize=(8, 8))
+sns.heatmap(confusion_matrix, annot = True, fmt='d', xticklabels = CLASS_NAMES, yticklabels = CLASS_NAMES, cmap = 'Blues')
 plt.xlabel('Predicted')
 plt.ylabel('True')
 plt.title('Confusion Matrix')
