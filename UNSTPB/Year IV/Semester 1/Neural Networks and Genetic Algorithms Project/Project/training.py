@@ -6,7 +6,7 @@ import seaborn as sns
 import numpy as np
 from tf_keras import layers
 from tf_keras.models import Sequential
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix, accuracy_score
 
 gpu_devices = tf.config.list_physical_devices('GPU')
 if gpu_devices:
@@ -19,10 +19,11 @@ else:
 IMG_SIZE = 225
 
 #define batch size
-BATCH_SIZE = 64
+BATCH_SIZE = 32
 
-#training directory, will also use as validation
+#training and valdiation directories
 TRAINING_DIR = "Train"
+VALIDATION_DIR = "Validation"
   
 #training split
 train_ds = tf_keras.utils.image_dataset_from_directory(
@@ -30,19 +31,15 @@ train_ds = tf_keras.utils.image_dataset_from_directory(
   labels = "inferred",
   image_size = (IMG_SIZE, IMG_SIZE),
   batch_size = BATCH_SIZE,
-  validation_split = 0.2,
-  subset = "training",
   seed = 225
 )
 
 #validation split, taken directly from the same directory as train
 validation_ds = tf_keras.utils.image_dataset_from_directory(
-  TRAINING_DIR,
+  VALIDATION_DIR,
   labels = "inferred",
   image_size = (IMG_SIZE, IMG_SIZE),
   batch_size = BATCH_SIZE,
-  validation_split = 0.2,
-  subset = "validation",
   seed = 225
 )
 
@@ -75,10 +72,13 @@ model = Sequential([
 model.compile(optimizer = 'adam', loss = tf_keras.losses.SparseCategoricalCrossentropy(from_logits = True), metrics = ['accuracy'])
 
 #no of epochs
-epochs = 30
+epochs = 100
+
+#early stopping
+early_stopping = tf_keras.callbacks.EarlyStopping(monitor = "val_accuracy", patience = 10)
 
 #fitting of the model
-history = model.fit(train_ds, validation_data = validation_ds, epochs = epochs)
+history = model.fit(train_ds, validation_data = validation_ds, epochs = epochs, callbacks = [early_stopping])
 
 #accuracy and loss values
 accuracy = history.history['accuracy']
@@ -95,21 +95,25 @@ predicted_labels = []
 for images, labels in val_ds:
   true_labels.extend(labels.numpy())
   pred = model.predict(images)
-  predicted_labels.extend(np.argmax(pred, axis=1))
+  predicted_labels.extend(np.argmax(pred, axis = 1))
 
 confusion_matrix = confusion_matrix(true_labels, predicted_labels)
+accuracy_score = accuracy_score(true_labels, predicted_labels)
 
+print('Confusion Matrix: ')
 plt.figure(figsize=(8, 8))
 sns.heatmap(confusion_matrix, annot = True, fmt = 'd', xticklabels = CLASS_NAMES, yticklabels = CLASS_NAMES, cmap = 'Blues')
 plt.xlabel('Predicted')
 plt.ylabel('True')
 plt.title('Confusion Matrix')
 
-plt.figure(figsize=(8, 8))
+print('Accuracy Score: ', accuracy_score)
+
+plt.figure(figsize = (8, 8))
 plt.subplot(1, 2, 1)
 plt.plot(accuracy, label = 'Training Accuracy')
 plt.plot(val_accuracy, label = 'Validation Accuracy')
-plt.legend(loc='lower right')
+plt.legend(loc = 'lower right')
 plt.title('Training and Validation Accuracy')
 
 plt.subplot(1, 2, 2)
