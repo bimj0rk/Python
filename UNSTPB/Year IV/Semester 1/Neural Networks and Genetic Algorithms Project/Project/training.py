@@ -22,7 +22,7 @@ IMG_SIZE = 225
 BATCH_SIZE = 64
 
 #training directory, will also use as validation
-TRAINING_DIR = "/Users/adiicmp_/Documents/Uni Shit/VSCode/Python/UNSTPB/Year IV/Semester 1/Neural Networks and Genetic Algorithms Project/Project/Train"
+TRAINING_DIR = r"D:\GitHub Repositories\Python\UNSTPB\Year IV\Semester 1\Neural Networks and Genetic Algorithms Project\Project\Train"
   
 #training split
 train_ds = tf_keras.utils.image_dataset_from_directory(
@@ -121,3 +121,4 @@ plt.plot(epochs_range, val_loss, label='Validation Loss')
 plt.legend(loc='upper right')
 plt.title('Training and Validation Loss')
 plt.show()
+# %%
