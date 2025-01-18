@@ -1,165 +1,108 @@
 import tensorflow as tf
-import tensorflow_hub as hub
 import tf_keras
-import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
-import os
-import datetime
+import numpy as np
+from tf_keras import layers
+from tf_keras.models import Sequential
+from sklearn.metrics import confusion_matrix
 
-labels = pd.read_csv(r"D:\GitHub Repositories\Python\UNSTPB\Year IV\Semester 1\Neural Networks and Genetic Algorithms Project\Project\type-labels.csv")
-labels.head()
+#define image size
+IMG_SIZE = 225
 
-labels["ID"] = labels["ID"].astype(str)
-
-filenames = [r"D:\GitHub Repositories\Python\UNSTPB\Year IV\Semester 1\Neural Networks and Genetic Algorithms Project\Project\Train\\"+ i + ".jpg" for i in labels["ID"]]
-
-train_image_path = r"D:\GitHub Repositories\Python\UNSTPB\Year IV\Semester 1\Neural Networks and Genetic Algorithms Project\Project\Train\\"
-
-if len(os.listdir(train_image_path)) == len(filenames):
-  print("Filenames match actual amount of files!!! Proceed.")
-else:
-  print("Filenames do no match actual amount of files, check the target directory.")
-
-lab_arr = labels["Type"].to_numpy()
-# labels = np.array(labels) # does same thing as above
-
-# Taking out the unique image types
-unique_type = np.unique(lab_arr)
-# Turn every label into a boolean array
-boolean_labels = [label == unique_type for label in lab_arr]
-len(boolean_labels), boolean_labels[:2]
-
-# Define image size
-IMG_SIZE = 224
-
-# Create a function for preprocessing images
-def process_image_mobilenet(image_path, img_size = IMG_SIZE):
-  """
-  Take am image file path and turns the image into a Tensor
-  """
-  # Read in an image file
-  image = tf.io.read_file(image_path)
-  # Turn the jpeg image into numerical Tensor with 3 colour channels (Red, Green, Blue)
-  image = tf.image.decode_jpeg(image, channels = 3)
-  # Convert the colour channel values from 0-255 to 0-1 values
-  image = tf.image.convert_image_dtype(image, tf.float32)
-  # Resize the image to our desired value (224, 224)
-  image = tf.image.resize(image, size = [img_size, img_size])
-
-  return image
-
-# Create a simple function to return a tuple (image, label)
-def get_image_label(image_path, label):
-  """
-  Takes an image file path name and the associated label, processes the image and returns a tuple of (image, label)
-  """
-  image = process_image_mobilenet(image_path)
-  return image, label
-
-# Define the batch size, 32 is a good start
+#define batch size
 BATCH_SIZE = 64
 
-# Create a function to turn data into batches
-def create_data_batches(x, y = None, batch_size = BATCH_SIZE, valid_data = False, test_data = False):
-  """
-  Create batches of data out of image (X) and label (y) pairs.
-  Shuffles the data if it's training data but doesn't shuffle if it's validation data.
-  Also accepts test data as input (no labels).
-  """
-  # If the data is a test dataset, we probably don't have labels
-  if test_data:
-    print("Creating test data batches...")
-    data = tf.data.Dataset.from_tensor_slices((tf.constant(x))) # only filepaths (no labels)
-    data_batch = data.map(process_image_mobilenet).batch(batch_size)
-    return data_batch
-
-  # If the data is a valid dataset, we don't need to shuffle it
-  elif valid_data:
-    print("Creating validation data batches...")
-    data = tf.data.Dataset.from_tensor_slices((tf.constant(x), # filepaths
-                                               tf.constant(y))) # labels
-    data_batch = data.map(get_image_label).batch(batch_size)
-    return data_batch
-
-  else:
-    print("Creating training data batches...")
-    # Turn filepaths and labels into Tensors
-    data = tf.data.Dataset.from_tensor_slices((tf.constant(x),
-                                               tf.constant(y)))
-    # Shuffling pathnames and labels before mapping image processor function is faster than shuffling image
-    data = data.shuffle(buffer_size=len(x))
-
-    # Create (image, label) tuples (this also turns the image path into a preprocessed image)
-    data = data.map(get_image_label)
-
-    # Turn the training data into batches
-    data_batch = data.batch(batch_size)
-    return data_batch
+#training directory, will also use as validation
+TRAINING_DIR = "/Users/adiicmp_/Documents/Uni Shit/VSCode/Python/UNSTPB/Year IV/Semester 1/Neural Networks and Genetic Algorithms Project/Project/Train"
   
-x = filenames
-y = boolean_labels
-train_data = create_data_batches(x, y)
-train_data.element_spec
+#training split
+train_ds = tf_keras.utils.image_dataset_from_directory(
+  TRAINING_DIR,
+  labels = "inferred",
+  image_size = (IMG_SIZE, IMG_SIZE),
+  batch_size = BATCH_SIZE,
+  validation_split = 0.2,
+  subset = "training",
+)
 
-# Setup input shape to the model
-INPUT_SHAPE = [None, IMG_SIZE, IMG_SIZE, 3] # batch, height width, colour channels
+#validation split, taken directly from the same directory as train
+validation_ds = tf_keras.utils.image_dataset_from_directory(
+  TRAINING_DIR,
+  labels = "inferred",
+  image_size = (IMG_SIZE, IMG_SIZE),
+  batch_size = BATCH_SIZE,
+  validation_split = 0.2,
+  subset = "validation",
+)
 
-# Setup output shape of our model
-OUTPUT_SHAPE = len(unique_type)
+CLASS_NAMES = train_ds.class_names
 
-# Setup model URL from TensorFLow HUB
-MODEL_URL = "https://www.kaggle.com/models/google/mobilenet-v3/TensorFlow2/large-075-224-classification/1"
+AUTOTUNE = tf.data.AUTOTUNE
+train_ds = train_ds.cache().shuffle(1000).prefetch(buffer_size = AUTOTUNE)
+val_ds = validation_ds.cache().prefetch(buffer_size = AUTOTUNE)
 
- # Create a function which builds a Keras model
-def create_model(input_shape = INPUT_SHAPE, output_shape = OUTPUT_SHAPE, model_url = MODEL_URL):
-    # Setup the model layers
-    model = tf_keras.Sequential([
-       hub.KerasLayer(model_url), # Layer 1 (input layer)
-       tf_keras.layers.Dense(units = output_shape, activation = "softmax") # Layer 2 (output layer)
-    ])
+norm_layer = layers.Rescaling(1./255)
+norm_ds = train_ds.map(lambda x, y: (norm_layer(x), y))
+image_batch, labels_batch = next(iter(norm_ds))
 
-    # Compile the model
-    model.compile(
-        loss = tf.keras.losses.CategoricalCrossentropy(),
-        optimizer = tf_keras.optimizers.Adam(),
-        metrics = ["accuracy"]
-    )
+num_classes = len(CLASS_NAMES)
 
-    # Build the model
-    model.build(input_shape)
+#training model
+model = Sequential([
+  layers.Conv2D(32, (3, 3), activation = 'relu', input_shape = (225, 225, 3)),
+  layers.MaxPooling2D(2, 2),
+  layers.Conv2D(64, (3, 3), activation = 'relu'),
+  layers.MaxPooling2D(2, 2),
+  layers.Conv2D(128, (3, 3), activation = 'relu'),
+  layers.MaxPooling2D(2, 2),
+  layers.Flatten(),
+  layers.Dense(128, activation = 'relu'),
+  layers.Dropout(0.5),
+  layers.Dense(num_classes, activation = 'softmax')
+])
 
-    return model
+model.compile(optimizer = 'adam', loss = tf_keras.losses.SparseCategoricalCrossentropy(from_logits = True), metrics = ['accuracy'])
 
-# Create Model instance
-model = create_model()
-model.summary()
+#no of epochs
+epochs = 100
 
-# Create a function to build a TensorBoard callback
-def create_tensorboard_callback():
-    # Create a log directory for storing TensorBoard logs
-    logdir = os.path.join(r"D:\GitHub Repositories\Python\UNSTPB\Year IV\Semester 1\Neural Networks and Genetic Algorithms Project\Project\logs", datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
-                          # Make it so the logs get tracked whenever we run an experiment
-    return tf_keras.callbacks.TensorBoard(logdir)
+#fitting of the model
+history = model.fit(train_ds, validation_data = validation_ds, epochs = epochs)
 
-model_tensorboard = create_tensorboard_callback()
+#accuracy and loss values
+accuracy = history.history['accuracy']
+val_accuracy = history.history[('val_accuracy')]
 
-# Create early stopping callback
-early_stopping = tf_keras.callbacks.EarlyStopping(monitor = "val_accuracy", patience = 3)
+loss = history.history['loss']
+val_loss = history.history['val_loss']
 
-NUM_EPOCHS = 10
+epochs_range = range(epochs)
 
-# Create a function to save a model
-def save_model(model, suffix = None):
-    """
-    saves a given mode in a models directory and appends a suffix (string).
-    """
-    # Create a model directory pathname with current time
-    modeldir = os.path.join(r"D:\GitHub Repositories\Python\UNSTPB\Year IV\Semester 1\Neural Networks and Genetic Algorithms Project\Project\Models",
-                            datetime.datetime.now().strftime("%Y%m%d-%H%M%s"))
-    model_path = modeldir + "-" + suffix + ".h5" # save format of model
-    print(f"Saving model to: {model_path}...")
-    model.save(model_path)
-    return model_path
+true_labels = []
+predicted_labels = []
 
-model.fit(x = train_data, epochs = NUM_EPOCHS, callbacks = [model_tensorboard, early_stopping])
+for images, labels in val_ds:
+  true_labels.extend(labels.numpy())
+  pred = model.predict(images)
+  predicted_labels.extend(np.argmax(pred, axis=1))
+
+confusion_matrix = confusion_matrix(true_labels, predicted_labels)
+
+plt.figure(figsize=(8, 8))
+plt.xlabel('Predicted')
+plt.ylabel('True')
+plt.title('Confusion Matrix')
+
+plt.figure(figsize=(8, 8))
+plt.subplot(1, 2, 1)
+plt.plot(epochs_range, accuracy, label='Training Accuracy')
+plt.plot(epochs_range, val_accuracy, label='Validation Accuracy')
+plt.legend(loc='lower right')
+plt.title('Training and Validation Accuracy')
+
+plt.subplot(1, 2, 2)
+plt.plot(epochs_range, loss, label='Training Loss')
+plt.plot(epochs_range, val_loss, label='Validation Loss')
+plt.legend(loc='upper right')
+plt.title('Training and Validation Loss')
+plt.show()
