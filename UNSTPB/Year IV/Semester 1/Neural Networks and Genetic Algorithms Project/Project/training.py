@@ -22,7 +22,7 @@ IMG_SIZE = 225
 BATCH_SIZE = 64
 
 #training directory, will also use as validation
-TRAINING_DIR = r"D:\GitHub Repositories\Python\UNSTPB\Year IV\Semester 1\Neural Networks and Genetic Algorithms Project\Project\Train"
+TRAINING_DIR = "Train"
   
 #training split
 train_ds = tf_keras.utils.image_dataset_from_directory(
@@ -75,13 +75,10 @@ model = Sequential([
 model.compile(optimizer = 'adam', loss = tf_keras.losses.SparseCategoricalCrossentropy(from_logits = True), metrics = ['accuracy'])
 
 #no of epochs
-epochs = 100
-
-#early stopping
-early_stopping = tf_keras.callbacks.EarlyStopping(monitor = 'val_loss', patience = 10)
+epochs = 30
 
 #fitting of the model
-history = model.fit(train_ds, validation_data = validation_ds, epochs = epochs, callbacks = [early_stopping])
+history = model.fit(train_ds, validation_data = validation_ds, epochs = epochs)
 
 #accuracy and loss values
 accuracy = history.history['accuracy']
@@ -103,22 +100,22 @@ for images, labels in val_ds:
 confusion_matrix = confusion_matrix(true_labels, predicted_labels)
 
 plt.figure(figsize=(8, 8))
-sns.heatmap(confusion_matrix, annot = True, fmt='d', xticklabels = CLASS_NAMES, yticklabels = CLASS_NAMES, cmap = 'Blues')
+sns.heatmap(confusion_matrix, annot = True, fmt = 'd', xticklabels = CLASS_NAMES, yticklabels = CLASS_NAMES, cmap = 'Blues')
 plt.xlabel('Predicted')
 plt.ylabel('True')
 plt.title('Confusion Matrix')
 
 plt.figure(figsize=(8, 8))
 plt.subplot(1, 2, 1)
-plt.plot(epochs_range, accuracy, label='Training Accuracy')
-plt.plot(epochs_range, val_accuracy, label='Validation Accuracy')
+plt.plot(accuracy, label = 'Training Accuracy')
+plt.plot(val_accuracy, label = 'Validation Accuracy')
 plt.legend(loc='lower right')
 plt.title('Training and Validation Accuracy')
 
 plt.subplot(1, 2, 2)
-plt.plot(epochs_range, loss, label='Training Loss')
-plt.plot(epochs_range, val_loss, label='Validation Loss')
-plt.legend(loc='upper right')
+plt.plot(loss, label = 'Training Loss')
+plt.plot(val_loss, label = 'Validation Loss')
+plt.legend(loc = 'upper right')
 plt.title('Training and Validation Loss')
 plt.show()
 # %%
