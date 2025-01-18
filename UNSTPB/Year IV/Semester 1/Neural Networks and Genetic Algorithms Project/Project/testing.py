@@ -6,6 +6,13 @@ from tf_keras import layers
 from tf_keras.models import Sequential
 from sklearn.metrics import confusion_matrix
 
+gpu_devices = tf.config.list_physical_devices('GPU')
+if gpu_devices:
+  tf.config.experimental.set_memory_growth(gpu_devices[0], True)
+  print('GPU found', gpu_devices[0])
+else:
+  print('No GPU found')
+
 #define image size
 IMG_SIZE = 225
 
@@ -23,6 +30,7 @@ train_ds = tf_keras.utils.image_dataset_from_directory(
   batch_size = BATCH_SIZE,
   validation_split = 0.2,
   subset = "training",
+  seed = 225
 )
 
 #validation split, taken directly from the same directory as train
@@ -33,6 +41,7 @@ validation_ds = tf_keras.utils.image_dataset_from_directory(
   batch_size = BATCH_SIZE,
   validation_split = 0.2,
   subset = "validation",
+  seed = 225
 )
 
 CLASS_NAMES = train_ds.class_names
@@ -66,8 +75,11 @@ model.compile(optimizer = 'adam', loss = tf_keras.losses.SparseCategoricalCrosse
 #no of epochs
 epochs = 100
 
+#early stopping
+early_stopping = tf_keras.callbacks.EarlyStopping(monitor = 'val_loss', patience = 10)
+
 #fitting of the model
-history = model.fit(train_ds, validation_data = validation_ds, epochs = epochs)
+history = model.fit(train_ds, validation_data = validation_ds, epochs = epochs, callbacks = [early_stopping])
 
 #accuracy and loss values
 accuracy = history.history['accuracy']
