@@ -6,7 +6,9 @@ import seaborn as sns
 import numpy as np
 from tf_keras import layers
 from tf_keras.models import Sequential
-from sklearn.metrics import confusion_matrix, accuracy_score
+from sklearn.metrics import confusion_matrix
+from tf_keras.optimizers import Adam
+from tf_keras.regularizers import l2
 
 gpu_devices = tf.config.list_physical_devices('GPU')
 if gpu_devices:
@@ -16,14 +18,13 @@ else:
   print('No GPU found')
 
 #define image size
-IMG_SIZE = 225
+IMG_SIZE = 224
 
 #define batch size
 BATCH_SIZE = 32
 
 #training and valdiation directories
 TRAINING_DIR = "Train"
-VALIDATION_DIR = "Validation"
   
 #training split
 train_ds = tf_keras.utils.image_dataset_from_directory(
@@ -31,24 +32,42 @@ train_ds = tf_keras.utils.image_dataset_from_directory(
   labels = "inferred",
   image_size = (IMG_SIZE, IMG_SIZE),
   batch_size = BATCH_SIZE,
+  subset = "training",
+  validation_split = 0.25,
   seed = 225
 )
 
 #validation split, taken directly from the same directory as train
 validation_ds = tf_keras.utils.image_dataset_from_directory(
-  VALIDATION_DIR,
+  TRAINING_DIR,
   labels = "inferred",
   image_size = (IMG_SIZE, IMG_SIZE),
   batch_size = BATCH_SIZE,
+  subset = 'validation',
+  validation_split = 0.25,
   seed = 225
 )
 
 CLASS_NAMES = train_ds.class_names
 
+#data augmentation to increase robustness
+data_augmentation = Sequential([
+  layers.experimental.preprocessing.RandomFlip('horizontal'),
+  layers.experimental.preprocessing.RandomRotation(0.2),
+  layers.experimental.preprocessing.RandomZoom(0.2) 
+])
+
+def augment_images(image, label):
+  image = data_augmentation(image)
+  return image, label
+
+train_ds = train_ds.map(augment_images)
+
 AUTOTUNE = tf.data.AUTOTUNE
-train_ds = train_ds.cache().shuffle(1000).prefetch(buffer_size = AUTOTUNE)
+train_ds = train_ds.prefetch(buffer_size = AUTOTUNE)
 val_ds = validation_ds.cache().prefetch(buffer_size = AUTOTUNE)
 
+#normalizing the data
 norm_layer = layers.Rescaling(1./255)
 norm_ds = train_ds.map(lambda x, y: (norm_layer(x), y))
 image_batch, labels_batch = next(iter(norm_ds))
@@ -57,32 +76,55 @@ num_classes = len(CLASS_NAMES)
 
 #training model
 model = Sequential([
-  layers.Conv2D(32, (3, 3), activation = 'relu', input_shape = (225, 225, 3)),
-  layers.MaxPooling2D(2, 2),
-  layers.Conv2D(64, (3, 3), activation = 'relu'),
+  layers.Conv2D(128, (3, 3), activation = 'relu', input_shape = (224, 224, 3)),
+  layers.BatchNormalization(),
   layers.MaxPooling2D(2, 2),
   layers.Conv2D(128, (3, 3), activation = 'relu'),
+  layers.BatchNormalization(),
+  layers.MaxPooling2D(2, 2),
+  layers.Conv2D(256, (3, 3), activation = 'relu'),
+  layers.BatchNormalization(),
+  layers.MaxPooling2D(2, 2),
+  layers.Conv2D(256, (3, 3), activation = 'relu'),
+  layers.BatchNormalization(),
+  layers.MaxPooling2D(2, 2),
+  layers.Conv2D(512, (3, 3), activation = 'relu'),
+  layers.BatchNormalization(),
+  layers.MaxPooling2D(2, 2),
+  layers.Conv2D(512, (3, 3), activation = 'relu'),
+  layers.BatchNormalization(),
   layers.MaxPooling2D(2, 2),
   layers.Flatten(),
-  layers.Dense(128, activation = 'relu'),
+  layers.Dense(512, activation = 'relu', kernel_regularizer = l2(0.01)),
   layers.Dropout(0.5),
   layers.Dense(num_classes, activation = 'softmax')
 ])
 
-model.compile(optimizer = 'adam', loss = tf_keras.losses.SparseCategoricalCrossentropy(from_logits = True), metrics = ['accuracy'])
+model.compile(optimizer = Adam(learning_rate = 0.0001, weight_decay = 1e-6), 
+              loss = tf_keras.losses.SparseCategoricalCrossentropy(from_logits = True), 
+              metrics = ['accuracy'])
 
 #no of epochs
 epochs = 100
 
+
 #early stopping
-early_stopping = tf_keras.callbacks.EarlyStopping(monitor = "val_accuracy", patience = 10)
+early_stopping = tf_keras.callbacks.EarlyStopping(monitor = 'val_loss', 
+                                                  mode = 'min', 
+                                                  verbose = 1, 
+                                                  patience = 8, 
+                                                  restore_best_weights = True)
+
 
 #fitting of the model
-history = model.fit(train_ds, validation_data = validation_ds, epochs = epochs, callbacks = [early_stopping])
+history = model.fit(train_ds, 
+                    validation_data = validation_ds, 
+                    epochs = epochs, 
+                    callbacks = [early_stopping])
 
 #accuracy and loss values
 accuracy = history.history['accuracy']
-val_accuracy = history.history[('val_accuracy')]
+val_accuracy = history.history['val_accuracy']
 
 loss = history.history['loss']
 val_loss = history.history['val_loss']
@@ -98,7 +140,6 @@ for images, labels in val_ds:
   predicted_labels.extend(np.argmax(pred, axis = 1))
 
 confusion_matrix = confusion_matrix(true_labels, predicted_labels)
-accuracy_score = accuracy_score(true_labels, predicted_labels)
 
 print('Confusion Matrix: ')
 plt.figure(figsize=(8, 8))
@@ -107,7 +148,10 @@ plt.xlabel('Predicted')
 plt.ylabel('True')
 plt.title('Confusion Matrix')
 
-print('Accuracy Score: ', accuracy_score)
+
+score = model.evaluate(validation_ds, verbose = 0)
+print('Validation loss:', score[0])
+print('Validation accuracy:', score[1])
 
 plt.figure(figsize = (8, 8))
 plt.subplot(1, 2, 1)

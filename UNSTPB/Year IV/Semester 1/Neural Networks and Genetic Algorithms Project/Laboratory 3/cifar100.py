@@ -1,11 +1,11 @@
-from keras.datasets import cifar100
-from keras.models import Sequential
-from keras.layers import Dense, Flatten, Conv2D, MaxPooling2D, Activation, Dropout
-from keras.losses import categorical_crossentropy
-from keras.optimizers import Adam
-from keras.utils import to_categorical
-from keras.callbacks import EarlyStopping
-from keras.preprocessing.image import ImageDataGenerator
+from tf_keras.datasets import cifar100
+from tf_keras.models import Sequential
+from tf_keras.layers import Dense, Flatten, Conv2D, MaxPooling2D, Activation, Dropout
+from tf_keras.losses import categorical_crossentropy
+from tf_keras.optimizers import Adam
+from tf_keras.utils import to_categorical
+from tf_keras.callbacks import EarlyStopping
+from tf_keras.preprocessing.image import ImageDataGenerator
 import matplotlib.pyplot as plt
 import numpy as np
 
