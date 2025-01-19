@@ -107,7 +107,7 @@ model.compile(optimizer = Adam(learning_rate = 0.0005, weight_decay = 1e-6),
               metrics = ['accuracy'])
 
 #no of epochs
-epochs = 10
+epochs = 100
 
 
 #early stopping
