@@ -102,7 +102,7 @@ model = Sequential([
 
 model.summary()
 
-model.compile(optimizer = Adam(learning_rate = 0.0005, weight_decay = 1e-6), 
+model.compile(optimizer = Adam(learning_rate = 0.0001, weight_decay = 1e-6), 
               loss = tf_keras.losses.SparseCategoricalCrossentropy(from_logits = True), 
               metrics = ['accuracy'])
 
@@ -114,8 +114,9 @@ epochs = 100
 early_stopping = tf_keras.callbacks.EarlyStopping(monitor = 'val_loss', 
                                                   mode = 'min', 
                                                   verbose = 1, 
-                                                  patience = 3, 
+                                                  patience = 7, 
                                                   restore_best_weights = True)
+                                       
 
 #class weights since the dataset is imbalanced
 class_weights = {
@@ -136,7 +137,7 @@ class_weights = {
 history = model.fit(train_ds, 
                     validation_data = validation_ds, 
                     epochs = epochs,
-                    class_weight = class_weights, 
+                    class_weight = class_weights,
                     callbacks = [early_stopping])
 
 #accuracy and loss values
