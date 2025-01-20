@@ -1,5 +1,4 @@
 #%%
-
 import tensorflow as tf
 import tf_keras
 import matplotlib.pyplot as plt
@@ -8,9 +7,6 @@ import numpy as np
 from tf_keras import layers
 from tf_keras.models import Sequential
 from sklearn.metrics import confusion_matrix
-from sklearn.utils.class_weight import compute_class_weight
-from sklearn.metrics import classification_report
-import numpy as np
 from tf_keras.optimizers import Adam
 from tf_keras.regularizers import l2
 
@@ -27,7 +23,7 @@ else:
 IMG_SIZE = 224
 
 #define batch size
-BATCH_SIZE = 32
+BATCH_SIZE = 64
 
 #training directory
 TRAINING_DIR = "Train"
@@ -40,6 +36,7 @@ train_ds = tf_keras.utils.image_dataset_from_directory(
   batch_size = BATCH_SIZE,
   subset = "training",
   validation_split = 0.25,
+  shuffle = True,
   seed = 225
 )
 
@@ -51,6 +48,7 @@ validation_ds = tf_keras.utils.image_dataset_from_directory(
   batch_size = BATCH_SIZE,
   subset = 'validation',
   validation_split = 0.25,
+  shuffle = True,
   seed = 225
 )
 
@@ -67,58 +65,73 @@ data_augmentation = Sequential([
   layers.experimental.preprocessing.RandomZoom(0.2) 
 ])
 
-train_ds = train_ds.map(lambda x, y: (data_augmentation(x, training = True), y), num_parallel_calls = AUTOTUNE)
+train_ds = train_ds.map(lambda x, y: (data_augmentation(x, training = True), y))
 
-num_classes = len(CLASS_NAMES)
-
-#normalizing the data
+#normalizing and augmenting the data
 norm_layer = layers.Rescaling(1./255)
 train_ds = train_ds.map(lambda x, y: (norm_layer(x), y))
 validation_ds = validation_ds.map(lambda x, y: (norm_layer(x), y))
 
+num_classes = len(CLASS_NAMES)
+
 #training model
 model = Sequential([
-  layers.Conv2D(32, (3, 3),  input_shape = (224, 224, 3)),
+  layers.Conv2D(64, (3, 3), input_shape = (224, 224, 3)),
   layers.Activation('relu'),
   layers.MaxPooling2D(2, 2),
   layers.Conv2D(64, (3, 3)),
   layers.Activation('relu'),
   layers.MaxPooling2D(2, 2),
-  layers.Conv2D(128, (5, 5)), 
+  layers.Conv2D(128, (3, 3)),
+  layers.Activation('relu'),
+  layers.MaxPooling2D(2, 2),
+  layers.Conv2D(128, (3, 3)),
+  layers.Activation('relu'),
+  layers.MaxPooling2D(2, 2),
+  layers.Conv2D(256, (5, 5)), 
+  layers.Activation('relu'),
+  layers.MaxPooling2D(2, 2),
+  layers.Conv2D(256, (3, 3)),
   layers.Activation('relu'),
   layers.MaxPooling2D(2, 2),
   layers.Flatten(),
-  layers.Dense(256, activation = 'relu', kernel_regularizer = l2(0.02)),
+  layers.Dense(512, activation = 'relu', kernel_regularizer = l2(0.02)),
   layers.Dropout(0.5),
   layers.Dense(num_classes, activation = 'softmax')
 ])
+
+model.summary()
 
 model.compile(optimizer = Adam(learning_rate = 0.0001, weight_decay = 1e-6), 
               loss = tf_keras.losses.SparseCategoricalCrossentropy(from_logits = True), 
               metrics = ['accuracy'])
 
 #no of epochs
-epochs = 50
+epochs = 100
 
 
 #early stopping
 early_stopping = tf_keras.callbacks.EarlyStopping(monitor = 'val_loss', 
                                                   mode = 'min', 
                                                   verbose = 1, 
-                                                  patience = 10, 
+                                                  patience = 7, 
                                                   restore_best_weights = True)
+                                       
 
 #class weights since the dataset is imbalanced
 class_weights = {
-    0: 0.677,  #bike
-    1: 1.200,  #bus
-    2: 1.425,  #hatchback
-    3: 2.768,  #pickup
-    4: 0.716,  #sedan
-    5: 1.150,  #suv
-    6: 0.792,  #truck
-    7: 0.911   #tuktuk
-}                                  
+    0: 0.657,  #bike
+    1: 1.165,  #bus
+    2: 1.006,  #cng
+    3: 0.885,  #easy bike
+    4: 1.385,  #hatchback
+    5: 1.296,  #mpv
+    6: 2.689,  #pickup
+    7: 0.695,  #sedan
+    8: 1.117,  #suv
+    9: 0.770   #truck
+}
+
 
 #fitting of the model
 history = model.fit(train_ds, 
@@ -170,6 +183,3 @@ plt.plot(val_loss, label = 'Validation Loss')
 plt.legend(loc = 'upper right')
 plt.title('Training and Validation Loss')
 plt.show()
-
-print(classification_report(true_labels, predicted_labels, target_names=CLASS_NAMES))
-# %%
