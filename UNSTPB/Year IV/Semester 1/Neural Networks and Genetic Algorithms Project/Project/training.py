@@ -76,46 +76,47 @@ num_classes = len(CLASS_NAMES)
 
 #training model
 model = Sequential([
-  layers.Conv2D(64, (3, 3), input_shape = (224, 224, 3)),
+  layers.Conv2D(32, (3, 3), input_shape = (224, 224, 3)),
+  layers.Activation('relu'),
+  layers.MaxPooling2D(2, 2),
+  layers.Conv2D(32, (3, 3)),
   layers.Activation('relu'),
   layers.MaxPooling2D(2, 2),
   layers.Conv2D(64, (3, 3)),
   layers.Activation('relu'),
   layers.MaxPooling2D(2, 2),
-  layers.Conv2D(128, (3, 3)),
+  layers.Conv2D(64, (3, 3)),
+  layers.Activation('relu'),
+  layers.MaxPooling2D(2, 2),
+  layers.Conv2D(128, (5, 5)), 
   layers.Activation('relu'),
   layers.MaxPooling2D(2, 2),
   layers.Conv2D(128, (3, 3)),
-  layers.Activation('relu'),
-  layers.MaxPooling2D(2, 2),
-  layers.Conv2D(256, (5, 5)), 
-  layers.Activation('relu'),
-  layers.MaxPooling2D(2, 2),
-  layers.Conv2D(256, (3, 3)),
   layers.Activation('relu'),
   layers.MaxPooling2D(2, 2),
   layers.Flatten(),
-  layers.Dense(512, activation = 'relu', kernel_regularizer = l2(0.02)),
+  layers.Dense(256, activation = 'relu', kernel_regularizer = l2(0.02)),
   layers.Dropout(0.5),
   layers.Dense(num_classes, activation = 'softmax')
 ])
 
 model.summary()
 
-model.compile(optimizer = Adam(learning_rate = 0.0005, weight_decay = 1e-6), 
+model.compile(optimizer = Adam(learning_rate = 0.0001, weight_decay = 1e-6), 
               loss = tf_keras.losses.SparseCategoricalCrossentropy(from_logits = True), 
               metrics = ['accuracy'])
 
 #no of epochs
-epochs = 10
+epochs = 200
 
 
 #early stopping
 early_stopping = tf_keras.callbacks.EarlyStopping(monitor = 'val_loss', 
                                                   mode = 'min', 
                                                   verbose = 1, 
-                                                  patience = 3, 
+                                                  patience = 10, 
                                                   restore_best_weights = True)
+                                       
 
 #class weights since the dataset is imbalanced
 class_weights = {
@@ -136,7 +137,7 @@ class_weights = {
 history = model.fit(train_ds, 
                     validation_data = validation_ds, 
                     epochs = epochs,
-                    class_weight = class_weights, 
+                    class_weight = class_weights,
                     callbacks = [early_stopping])
 
 #accuracy and loss values
