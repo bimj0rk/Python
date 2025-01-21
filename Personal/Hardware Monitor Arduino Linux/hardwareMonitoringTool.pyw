@@ -1,7 +1,7 @@
 import serial
 import time
 import psutil
-import py3nvml
+import pynvml
 
 arduino = serial.Serial(port="/dev/ttyACM0", baudrate=115200, timeout=.1)
 
@@ -12,10 +12,10 @@ def writeRead(x):
     return data
 
 def initializeNVML():
-	py3nvml.nvmlInit()
+	pynvml.nvmlInit()
 
 def handle():
-	handle = py3nvml.nvmlDeviceGetHandleByIndex(0)
+	handle = pynvml.nvmlDeviceGetHandleByIndex(0)
 	return handle
 
 def main():
@@ -38,23 +38,23 @@ def main():
 			C = " " + str(int(memLoad))
 		else:
 			C = str(int(memLoad))
-
-		moboTemp = 'N/A'
-		D = moboTemp
-
-		gpuTemp = py3nvml.nvmlDeviceGetTemperature(handle, 0)
+		
+		gpuTemp = pynvml.nvmlDeviceGetTemperature(handle, 0)
 		E = " " + str(int(gpuTemp))
 
-		gpuLoad = py3nvml.nvmlDeviceGetUtilizationRates(handle).gpu
+		gpuLoad = pynvml.nvmlDeviceGetUtilizationRates(handle).gpu
 		if(gpuLoad < 10):
 			F = "  " + str(int(gpuLoad))
 		elif(gpuLoad < 100 and gpuLoad > 10):
 			F = " " + str(int(gpuLoad))
 		else:
 			F = str(int(gpuLoad))
+		
+		moboTemp = psutil.sensors_temperatures()['acpitz'][0].current
+		D = " " + str(int(moboTemp))
 
-		caseTemp = "N/A"
-		H = caseTemp
+		caseTemp = psutil.sensors_temperatures()['mt7921_phy0'][0].current
+		H = " " + str(int(caseTemp))
 		      
 		finalString1 = "1:" + A + "," + B + "," + C + "," + D + ",;"
 		finalString2 = "2:" + E + "," + F + "," + "N/A" + "," + H + ",;"

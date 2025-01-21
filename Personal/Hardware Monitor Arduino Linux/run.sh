@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python /home/adiicmp/GitHub Repos/Python/Personal/Hardware Monitor Arduino Linux/hardwareMonitoringTool.pyw &
+"/home/adiicmp/GitHub Repos/Python/.venv/bin/python" "hardwareMonitoringTool.pyw" &
