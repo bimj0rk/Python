@@ -26,7 +26,7 @@ IMG_SIZE = 224
 BATCH_SIZE = 64
 
 #training directory
-TRAINING_DIR = "Train"
+TRAINING_DIR = "/Users/adiicmp_/Documents/Uni Shit/VSCode/Python/UNSTPB/Year IV/Semester 1/Neural Networks and Genetic Algorithms Project/Project/Train"
   
 #training split
 train_ds = tf_keras.utils.image_dataset_from_directory(
